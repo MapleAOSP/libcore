@@ -20,6 +20,7 @@
 #include "JNIHelp.h"
 #include "JniConstants.h"
 #include "JniException.h"
+#include "ScopedFd.h"
 #include "ScopedIcuLocale.h"
 #include "ScopedJavaUnicodeString.h"
 #include "ScopedLocalRef.h"
@@ -63,8 +64,6 @@
 #include <unistd.h>
 #include <memory>
 #include <vector>
-
-#include <android-base/unique_fd.h>
 
 class ScopedResourceBundle {
  public:
@@ -834,7 +833,7 @@ static JNINativeMethod gMethods[] = {
 
 static bool mapIcuData(const std::string& path) {
     // Open the file and get its length.
-    android::base::unique_fd fd(open(path.c_str(), O_RDONLY));
+    ScopedFd fd(open(path.c_str(), O_RDONLY));
     if (fd.get() == -1) {
         FAIL_WITH_STRERROR("open");
     }
